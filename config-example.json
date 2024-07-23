@@ -1,0 +1,53 @@
+{
+    "accounts": [
+        {
+            "enabled": false,
+            "email": "sample@example.com",
+            "password": "password",
+            "imap": {
+                "server": "imap.example.com",
+                "port": 993,
+                "use_ssl": true
+            },
+            "smtp": {
+                "server": "smtp.example.com",
+                "port": 465,
+                "use_ssl": true,
+                "use_starttls": false
+            },
+            "proxy": {
+                "enabled": true,
+                "server": "127.0.0.1",
+                "port": 7897
+            },
+            "forward": {
+                "to": ["forward@example.com", "forward2@example.com"]
+            }
+        },
+        {
+            "enabled": true,
+            "email": "active@example.com",
+            "password": "password",
+            "imap": {
+                "server": "imap.active.com",
+                "port": 993,
+                "use_ssl": true
+            },
+            "smtp": {
+                "server": "smtp.active.com",
+                "port": 465,
+                "use_ssl": false,
+                "use_starttls": true
+            },
+            "proxy": {
+                "enabled": false,
+                "server": "127.0.0.1",
+                "port": 7897
+            },
+            "forward": {
+                "to": ["forward@example.com"]
+            }
+        }
+    ],
+    "check_interval": 10
+}
