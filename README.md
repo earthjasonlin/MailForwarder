@@ -38,6 +38,7 @@ pip install pysocks
 
 ```json
 {
+  "log": "output.log",
   "check_interval": 60,
   "accounts": [
     {
@@ -70,6 +71,7 @@ pip install pysocks
 
 ### 配置项说明
 
+- `log`: 日志文件路径。
 - `check_interval`: 检查邮件的时间间隔，单位为秒。
 - `accounts`: 配置多个邮箱账户。
   - `email`: 邮箱地址。

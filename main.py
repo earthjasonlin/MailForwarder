@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import parseaddr
 import time
+import datetime
 import logging
 import socks
 import socket
@@ -38,9 +39,19 @@ def set_proxy(proxy_config):
     socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, proxy_config['server'], proxy_config['port'])
     socket.socket = socks.socksocket
 
-def setup_logging():
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+def setup_logging(filename):
     logger = logging.getLogger()
+    logger.setLevel('DEBUG')
+    BASIC_FORMAT = "%(asctime)s >> %(levelname)s - %(message)s"
+    DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
+    formatter = logging.Formatter(BASIC_FORMAT, DATE_FORMAT)
+    chlr = logging.StreamHandler()
+    chlr.setFormatter(formatter)
+    chlr.setLevel('INFO')
+    fhlr = logging.FileHandler(filename)
+    fhlr.setFormatter(formatter)
+    logger.addHandler(chlr)
+    logger.addHandler(fhlr)
     return logger
 
 def get_unforwarded_emails(account_config, logger):
@@ -73,7 +84,8 @@ def get_unforwarded_emails(account_config, logger):
                 if 'Forwarded' not in msg['Subject']:
                     emails.append((email_id, msg))
     imap.logout()
-    logger.info(f"Retrieved {len(emails)} new emails from {account_config['email']}")
+    if len(emails) > 0:
+        logger.info(f"Retrieved {len(emails)} new emails from {account_config['email']}")
     return emails
 
 def forward_emails(account_config, emails, logger):
@@ -92,9 +104,11 @@ def forward_emails(account_config, emails, logger):
     
     for email_id, original_msg in emails:
         for recipient in account_config['forward']['to']:
+            from_name, from_address = parseaddr(original_msg['From'])
+            to_name, to_address = parseaddr(original_msg['To'])
             msg = MIMEMultipart('mixed')
-            msg['From'] = account_config['email']
-            msg['To'] = recipient
+            msg['From'] = f"{from_name} ({from_address}) via Forwarder <{account_config['email']}>"
+            msg['To'] = f"{to_name} ({to_address}) via Forwarder <{recipient}>"
             original_subject = decode_mime_words(original_msg['Subject'])
             msg['Subject'] = original_subject
             
@@ -129,13 +143,13 @@ def forward_emails(account_config, emails, logger):
                 msg.attach(attachment)
             
             smtp.sendmail(account_config['email'], recipient, msg.as_string())
-            logger.info(f"Forwarded email {original_subject} to {recipient}")
+            logger.info(f"Forwarded email {original_subject} from {account_config['email']} to {recipient}")
     
     smtp.quit()
 
 def main():
-    logger = setup_logging()
     config = load_config()
+    logger = setup_logging(config['log'])
     
     while True:
         for account in config['accounts']:
@@ -144,13 +158,10 @@ def main():
                     emails = get_unforwarded_emails(account, logger)
                     if emails:
                         forward_emails(account, emails, logger)
-                    else:
-                        logger.info(f"No new emails to forward for {account['email']}.")
                 except Exception as e:
                     logger.error(f"Error processing account {account['email']}: {str(e)}")
-            else:
-                logger.info(f"Account {account['email']} is disabled.")
         
+        logger.info(datetime.datetime.now().strftime("Check finished at %Y-%m-%d %H:%M:%S"))
         time.sleep(config.get('check_interval', 60))
 
 if __name__ == "__main__":
