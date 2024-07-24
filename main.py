@@ -26,7 +26,7 @@ def add_mask(original_msg, content):
     from_name = decode_mime_words(from_name)
     to_name, to_address = parseaddr(original_msg['To'])
     to_name = decode_mime_words(to_name)
-    header = f"""<table align=center style="background:#3d3d3d;padding:8px 16px;margin-top:30px;margin-bottom:30px;width:96%;border-radius:6px;max-width:1200px"width=100% bgcolor=#3D3D3D id=relay-email-header><tr><td style=font-size:xx-large;font-weight:bolder;color:#fff width=50% align=left>Forwarded Email<td style=color:#fff;text-align:right width=50% align=right><p>From: {from_name} &lt;{from_address}&gt;<p>To: {to_name} &lt;{to_address}&gt;<p>Subject: {original_subject}</table><table align=center style=padding:0;max-width:850px width=100%><tr><td style=padding-left:15px;padding-right:15px width=100%>"""
+    header = f"""<table align=center style="background:#3d3d3d;padding:8px 16px;margin-top:30px;margin-bottom:30px;width:96%;border-radius:6px;max-width:1200px"width=100% bgcolor=#3D3D3D><tr><td style=font-size:xx-large;font-weight:bolder;color:#fff width=50% align=left>Forwarded Email<td style=color:#fff;text-align:right width=50% align=right><p>From: {from_name} &lt;{from_address}&gt;<p>To: {to_name} &lt;{to_address}&gt;<p>Subject: {original_subject}</table><table align=center style=padding:0;max-width:850px width=100%><tr><td style=padding-left:15px;padding-right:15px width=100%>"""
     footer = f"""<table align=center bgcolor=#3D3D3D style="background:#3d3d3d;padding:8px 16px;margin-top:30px;margin-bottom:30px;width:96%;border-radius:6px;max-width:1200px"width=100%><tr><td align=left style=color:#d22;font-size:xx-large;font-weight:bolder width=50%>FORWARDED<td align=right style=color:#fff;text-align:left width=50%><p style=font-size:x-large;font-weight:700;margin-block:0>Notice:<p style=margin-block:.1em> This is a automatically forwarded email, which means it may contains something bad.<p style=margin-block:.1em> You shouldn't reply directly to this email, it will never reach your destination!</table>"""
     return header + content + footer
 
@@ -81,8 +81,7 @@ def get_unforwarded_emails(account_config, logger):
         for response_part in data:
             if isinstance(response_part, tuple):
                 msg = email.message_from_bytes(response_part[1])
-                if 'Forwarded' not in msg['Subject']:
-                    emails.append((email_id, msg))
+                emails.append((email_id, msg))
     imap.logout()
     if len(emails) > 0:
         logger.info(f"Retrieved {len(emails)} new emails from {account_config['email']}")
