@@ -115,8 +115,8 @@ def forward_emails(account_config, emails, logger):
             to_name, to_address = parseaddr(original_msg['To'])
             to_name = decode_mime_words(to_name)
             msg = MIMEMultipart('mixed')
-            if provider_in(account_config['email'], ["yandex.com"]):
-                msg['From'] = f"{from_name} via Forwarder <{account_config['email']}>"
+            if provider_in(account_config['email'], ["yandex.com", "mail.ru", "internet.ru", "bk.ru", "inbox.ru", "list.ru"]):
+                msg['From'] = f"Forwarder <{account_config['email']}>"
             else:
                 msg['From'] = f"{from_name} ({from_address}) via Forwarder <{account_config['email']}>"
             msg['To'] = f"{to_name} ({to_address}) via Forwarder <{recipient}>"
