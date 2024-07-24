@@ -10,6 +10,7 @@ import datetime
 import logging
 import socks
 import socket
+import re
 
 from email.header import decode_header
 
@@ -20,14 +21,14 @@ def decode_mime_words(s):
         for fragment, encoding in decoded_fragments
     )
 
-def add_mask(original_msg, content):
+def add_mask(original_msg, content, is_html):
     original_subject = decode_mime_words(original_msg['Subject'])
     from_name, from_address = parseaddr(original_msg['From'])
     from_name = decode_mime_words(from_name)
     to_name, to_address = parseaddr(original_msg['To'])
     to_name = decode_mime_words(to_name)
-    header = f"""<table align=center style="background:#3d3d3d;padding:8px 16px;margin-top:30px;margin-bottom:30px;width:96%;border-radius:6px;max-width:1200px"width=100% bgcolor=#3D3D3D><tr><td style=font-size:xx-large;font-weight:bolder;color:#fff width=50% align=left>Forwarded Email<td style=color:#fff;text-align:right width=50% align=right><p>From: {from_name} &lt;{from_address}&gt;<p>To: {to_name} &lt;{to_address}&gt;<p>Subject: {original_subject}</table><table align=center style=padding:0;max-width:850px width=100%><tr><td style=padding-left:15px;padding-right:15px width=100%>"""
-    footer = f"""<table align=center bgcolor=#3D3D3D style="background:#3d3d3d;padding:8px 16px;margin-top:30px;margin-bottom:30px;width:96%;border-radius:6px;max-width:1200px"width=100%><tr><td align=left style=color:#d22;font-size:xx-large;font-weight:bolder width=50%>FORWARDED<td align=right style=color:#fff;text-align:left width=50%><p style=font-size:x-large;font-weight:700;margin-block:0>Notice:<p style=margin-block:.1em> This is a automatically forwarded email, which means it may contains something bad.<p style=margin-block:.1em> You shouldn't reply directly to this email, it will never reach your destination!</table>"""
+    header = f"""<html><head></head><body><table style="background:#3d3d3d;padding:8px 16px;margin-top:30px;margin-bottom:30px;width:96%;border-radius:6px;max-width:1200px" width="100%" bgcolor="#3D3D3D" align="center"><tbody><tr><td width="50%" align="left" style="font-weight:bolder;color:#fff"><p style="font-size:x-large;margin-block:.2em">Forwarded Email</p>{'' if is_html else '<p style="font-size: medium; margin-block: 0.2em;">This email is plain text, it may have display issues</p>'}</td><td width="50%" align="right" style="color:#fff;text-align:right"><p style="margin-block:.1em">From: {from_name} &lt;{from_address}&gt;</p><p style="margin-block:.1em">To: {to_name} &lt;{to_address}&gt;</p><p style="margin-block:.1em">Subject: {original_subject}</p></td></tr></tbody></table><table style="padding:0;max-width:850px" width="100%" align="center"><tbody><tr><td style="padding-left:15px;padding-right:15px" width="100%">"""
+    footer = f"""</td></tr></tbody></table><table style="background:#3d3d3d;padding:8px 16px;margin-top:30px;margin-bottom:30px;width:96%;border-radius:6px;max-width:1200px" width="100%" bgcolor="#3D3D3D" align="center"><tbody><tr><td width="50%" align="left" style="color:#d22;font-size:xx-large;font-weight:bolder">FORWARDED</td><td width="50%" align="right" style="color:#fff;text-align:left"><p style="font-size:x-large;font-weight:700;margin-block:0">Notice:</p><p style="margin-block:.1em">&emsp;This is a automatically forwarded email, which means it may contains something bad.</p><p style="margin-block:.1em">&emsp;You shouldn't reply directly to this email, it will never reach your destination!</p></td></tr></tbody></table></body></html>"""
     return header + content + footer
 
 def load_config(config_file='config.json'):
@@ -133,7 +134,12 @@ def forward_emails(account_config, emails, logger):
                 logger.error(f"Failed to extract body from email {email_id}")
                 continue
             
-            html_content = add_mask(original_msg, body)
+            is_html = bool(re.compile(r'<[^>]+>').search(body))
+
+            if not is_html:
+                body = body.replace('\n', '<br>')
+
+            html_content = add_mask(original_msg, body, is_html)
             msg.attach(MIMEText(html_content, 'html'))
 
             for attachment in attachments:

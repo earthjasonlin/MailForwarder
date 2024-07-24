@@ -1,71 +1,78 @@
-<table
-    style="
-        background: #3d3d3d;
-        padding: 8px 16px;
-        margin-top: 30px;
-        margin-bottom: 30px;
-        width: 96%;
-        border-radius: 6px;
-        max-width: 1200px;
-    "
-    width="100%"
-    bgcolor="#3D3D3D"
-    align="center">
-    <tbody>
-        <tr>
-            <td
-                width="50%"
-                align="left"
-                style="
-                    font-size: xx-large;
-                    font-weight: bolder;
-                    color: #ffffff;
-                ">
-                Forwarded Email
-            </td>
-            <td width="50%" align="right" style="color: #ffffff; text-align: right;">
-                <p>From: {from_name} &lt;{from_address}&gt;</p>
-                <p>To: {to_name} &lt;{to_address}&gt;</p>
-                <p>Subject: {original_subject}</p>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<table style="padding: 0; max-width: 850px" width="100%" align="center">
-    <tbody>
-        <tr>
-            <td style="padding-left: 15px; padding-right: 15px" width="100%">
-                <!-- content -->
-            </td>
-        </tr>
-    </tbody>
-</table>
-<table
-    style="
-        background: #3d3d3d;
-        padding: 8px 16px;
-        margin-top: 30px;
-        margin-bottom: 30px;
-        width: 96%;
-        border-radius: 6px;
-        max-width: 1200px;
-    "
-    width="100%"
-    bgcolor="#3D3D3D"
-    align="center">
-    <tbody>
-        <tr>
-            <td
-                width="50%"
-                align="left"
-                style="color: #dd2222; font-size: xx-large; font-weight: bolder">
-                FORWARDED
-            </td>
-            <td width="50%" align="right" style="color: #ffffff; text-align: left;">
-                <p style="font-size: x-large; font-weight: bold; margin-block: 0;">Notice:</p>
-                <p style="margin-block: 0.1em;">&emsp;This is a automatically forwarded email, which means it may contains something bad.</p>
-                <p style="margin-block: 0.1em;">&emsp;You shouldn't reply directly to this email, it will never reach your destination!</p>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<html>
+    <head></head>
+    <body>
+        <table
+            style="
+                background: #3d3d3d;
+                padding: 8px 16px;
+                margin-top: 30px;
+                margin-bottom: 30px;
+                width: 96%;
+                border-radius: 6px;
+                max-width: 1200px;
+            "
+            width="100%"
+            bgcolor="#3D3D3D"
+            align="center">
+            <tbody>
+                <tr>
+                    <td width="50%" align="left" style="font-weight: bolder; color: #ffffff">
+                        <p style="font-size: x-large; margin-block: 0.2em">Forwarded Email</p>
+                        <!-- <p style="font-size: medium; margin-block: 0.2em;">This email is plain text, it may have display issues</p> -->
+                    </td>
+                    <td width="50%" align="right" style="color: #ffffff; text-align: right">
+                        <p style="margin-block: 0.1em">From: {from_name} &lt;{from_address}&gt;</p>
+                        <p style="margin-block: 0.1em">To: {to_name} &lt;{to_address}&gt;</p>
+                        <p style="margin-block: 0.1em">Subject: {original_subject}</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table style="padding: 0; max-width: 850px" width="100%" align="center">
+            <tbody>
+                <tr>
+                    <td style="padding-left: 15px; padding-right: 15px" width="100%">
+                        <!-- content -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table
+            style="
+                background: #3d3d3d;
+                padding: 8px 16px;
+                margin-top: 30px;
+                margin-bottom: 30px;
+                width: 96%;
+                border-radius: 6px;
+                max-width: 1200px;
+            "
+            width="100%"
+            bgcolor="#3D3D3D"
+            align="center">
+            <tbody>
+                <tr>
+                    <td
+                        width="50%"
+                        align="left"
+                        style="color: #dd2222; font-size: xx-large; font-weight: bolder">
+                        FORWARDED
+                    </td>
+                    <td width="50%" align="right" style="color: #ffffff; text-align: left">
+                        <p style="font-size: x-large; font-weight: bold; margin-block: 0">
+                            Notice:
+                        </p>
+                        <p style="margin-block: 0.1em">
+                            &emsp;This is a automatically forwarded email, which means it may
+                            contains something bad.
+                        </p>
+                        <p style="margin-block: 0.1em">
+                            &emsp;You shouldn't reply directly to this email, it will never reach
+                            your destination!
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
