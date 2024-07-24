@@ -105,7 +105,9 @@ def forward_emails(account_config, emails, logger):
     for email_id, original_msg in emails:
         for recipient in account_config['forward']['to']:
             from_name, from_address = parseaddr(original_msg['From'])
+            from_name = decode_mime_words(from_name)
             to_name, to_address = parseaddr(original_msg['To'])
+            to_name = decode_mime_words(to_name)
             msg = MIMEMultipart('mixed')
             msg['From'] = f"{from_name} ({from_address}) via Forwarder <{account_config['email']}>"
             msg['To'] = f"{to_name} ({to_address}) via Forwarder <{recipient}>"
