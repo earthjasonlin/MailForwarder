@@ -14,6 +14,12 @@ import re
 
 from email.header import decode_header
 
+def provider_in(address, provider_list):
+    for provider in provider_list:
+        if address.endswith(provider):
+            return True
+    return False
+
 def decode_mime_words(s):
     decoded_fragments = decode_header(s)
     return ''.join(
@@ -66,7 +72,7 @@ def get_unforwarded_emails(account_config, logger):
 
     imap.login(account_config['email'], account_config['password'])
     
-    if "163.com" in account_config['email'] or "126.com" in account_config['email']:
+    if provider_in(account_config['email'], ["163.com", "126.com"]):
         imaplib.Commands['ID'] = ('AUTH')
         args = ("name","XXXX","contact","XXXX@163.com","version","1.0.0","vendor","myclient")
         typ, dat = imap._simple_command('ID', '("' + '" "'.join(args) + '")')
@@ -109,7 +115,10 @@ def forward_emails(account_config, emails, logger):
             to_name, to_address = parseaddr(original_msg['To'])
             to_name = decode_mime_words(to_name)
             msg = MIMEMultipart('mixed')
-            msg['From'] = f"{from_name} ({from_address}) via Forwarder <{account_config['email']}>"
+            if provider_in(account_config['email'], ["yandex.com"]):
+                msg['From'] = f"{from_name} via Forwarder <{account_config['email']}>"
+            else:
+                msg['From'] = f"{from_name} ({from_address}) via Forwarder <{account_config['email']}>"
             msg['To'] = f"{to_name} ({to_address}) via Forwarder <{recipient}>"
             original_subject = decode_mime_words(original_msg['Subject'])
             msg['Subject'] = original_subject
