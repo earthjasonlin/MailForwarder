@@ -89,6 +89,8 @@ def get_unforwarded_emails(account_config, logger):
             if isinstance(response_part, tuple):
                 msg = email.message_from_bytes(response_part[1])
                 emails.append((email_id, msg))
+        imap.store(email_id, '+FLAGS', '\Seen')
+        
     imap.logout()
     if len(emails) > 0:
         logger.info(f"Retrieved {len(emails)} new emails from {account_config['email']}")
