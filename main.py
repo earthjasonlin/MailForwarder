@@ -66,9 +66,9 @@ def get_unforwarded_emails(account_config, logger):
         set_proxy(account_config['proxy'])
     
     if account_config['imap'].get('use_ssl', True):
-        imap = imaplib.IMAP4_SSL(account_config['imap']['server'], account_config['imap']['port'])
+        imap = imaplib.IMAP4_SSL(account_config['imap']['server'], account_config['imap']['port'], timeout=10)
     else:
-        imap = imaplib.IMAP4(account_config['imap']['server'], account_config['imap']['port'])
+        imap = imaplib.IMAP4(account_config['imap']['server'], account_config['imap']['port'], timeout=10)
 
     imap.login(account_config['email'], account_config['password'])
     
@@ -102,9 +102,9 @@ def forward_emails(account_config, emails, logger):
     
     smtp = None
     if account_config['smtp'].get('use_ssl', False):
-        smtp = smtplib.SMTP_SSL(account_config['smtp']['server'], account_config['smtp']['port'])
+        smtp = smtplib.SMTP_SSL(account_config['smtp']['server'], account_config['smtp']['port'], timeout=10)
     else:
-        smtp = smtplib.SMTP(account_config['smtp']['server'], account_config['smtp']['port'])
+        smtp = smtplib.SMTP(account_config['smtp']['server'], account_config['smtp']['port'], timeout=10)
         if account_config['smtp'].get('use_starttls', False):
             smtp.starttls()
     
