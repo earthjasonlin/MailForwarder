@@ -1,5 +1,4 @@
 {
-    "log": "output.log",
     "accounts": [
         {
             "enabled": false,
