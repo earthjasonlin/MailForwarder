@@ -61,10 +61,7 @@ def setup_logging(filename):
     chlr = logging.StreamHandler()
     chlr.setFormatter(formatter)
     chlr.setLevel('INFO')
-    fhlr = logging.FileHandler(filename, encoding='utf-8')
-    fhlr.setFormatter(formatter)
     logger.addHandler(chlr)
-    logger.addHandler(fhlr)
     return logger
 
 def get_unforwarded_emails(account_config, logger):
