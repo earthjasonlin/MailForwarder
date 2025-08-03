@@ -51,7 +51,7 @@ def set_proxy(proxy_config):
     socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, proxy_config['server'], proxy_config['port'])
     socket.socket = socks.socksocket
 
-def setup_logging(filename):
+def setup_logging():
     """Sets up the logging"""
     logger = logging.getLogger()
     logger.setLevel('DEBUG')
@@ -170,7 +170,7 @@ def forward_emails(account_config, emails, logger):
 def main():
     """Main function"""
     config = load_config()
-    logger = setup_logging(config['log'])
+    logger = setup_logging()
 
     while True:
         for account in config['accounts']:
